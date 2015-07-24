@@ -203,8 +203,16 @@ SetInterfaceInfo(char* dev_name_list)
 		}
 		
 		/* get mac addr entries of 'detected' dpdk ports */
-		for (ret = 0; ret < num_devices; ret++)
+		for (ret = 0; ret < num_devices; ret++) {
 			rte_eth_macaddr_get(ret, &ports_eth_addr[ret]);
+			fprintf(stderr, "<<<<TEST>>>> device %d : MAC %02x:%02x:%02x:%02x:%02x:%02x\n", ret,
+					ports_eth_addr[ret].addr_bytes[0],
+					ports_eth_addr[ret].addr_bytes[1],
+					ports_eth_addr[ret].addr_bytes[2],
+					ports_eth_addr[ret].addr_bytes[3],
+					ports_eth_addr[ret].addr_bytes[4],
+					ports_eth_addr[ret].addr_bytes[5]);
+		}
 		
 		num_queues = MIN(CONFIG.num_cores, MAX_CPUS);
 
@@ -247,6 +255,8 @@ SetInterfaceInfo(char* dev_name_list)
 					for (j = 0; j < 6; j ++) {
 						CONFIG.eths[eidx].haddr[j] = ifr.ifr_addr.sa_data[j];
 					}
+					memcpy(&CONFIG.eths[eidx].haddr[0], &ports_eth_addr[eidx].addr_bytes[0],
+							ETH_ALEN);
 				}
 
 				/* Net MASK */
