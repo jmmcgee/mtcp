@@ -246,13 +246,24 @@ dpdk_send_pkts(struct mtcp_thread_context *ctxt, int nif)
 		ioctl(dpc->fd, 0, &ss);
 #endif /* !ENABLE_STATS_IOCTL */
 #endif
+
+    {
+      fprintf(stderr, "<<<<MTCP>>>> dpdk_send_pkts: sending %d packets...\n", cnt);
+      int i;
+      for(i = 0; i < cnt; i++) {
+        fprintf(stderr, "<<<<MTCP>>>> dpdk_recv_pkts: packet %d: data_len=%d pkt_len=%d\n",
+            i, pkts[i]->data_len, pkts[i]->pkt_len);
+      }
+    }
 		do {
 			/* tx cnt # of packets */
 			ret = rte_eth_tx_burst(nif, ctxt->cpu, 
 					       pkts, cnt);
 			pkts += ret;
 			cnt -= ret;
-			/* if not all pkts were sent... then repeat the cycle */
+      fprintf(stderr, "<<<<MTCP>>>> dpdk_send_pkts: sent %d packets\n", ret);
+
+      /* if not all pkts were sent... then repeat the cycle */
 		} while (cnt > 0);
 
 		/* time to allocate fresh mbufs for the queue */
@@ -334,6 +345,13 @@ dpdk_recv_pkts(struct mtcp_thread_context *ctxt, int ifidx)
 
 	ret = rte_eth_rx_burst((uint8_t)ifidx, ctxt->cpu,
 			       dpc->pkts_burst, MAX_PKT_BURST);
+  if(ret > 0) {
+    fprintf(stderr, "<<<<MTCP>>>> dpdk_recv_pkts: %d packets bytes\n", ret);
+    int i;
+    for(i = 0; i < ret; i++) {
+      fprintf(stderr, "<<<<MTCP>>>> dpdk_recv_pkts: packet %d: data_len=%d pkt_len=%d\n", i, dpc->pkts_burst[i]->data_len, dpc->pkts_burst[i]->pkt_len);
+    }
+  }
 
 	dpc->rmbufs[ifidx].len = ret;
 

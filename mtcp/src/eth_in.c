@@ -4,6 +4,7 @@
 #include "arp.h"
 #include "debug.h"
 
+#include <stdio.h>
 /*----------------------------------------------------------------------------*/
 int
 ProcessPacket(mtcp_manager_t mtcp, const int ifidx, 
@@ -13,6 +14,8 @@ ProcessPacket(mtcp_manager_t mtcp, const int ifidx,
 	u_short ip_proto = ntohs(ethh->h_proto);
 	int ret;
 
+  if(len != 60)
+    fprintf(stderr, "<<<<MTCP>>>> ProcessPacket: len = %d\n", len);
 #ifdef PKTDUMP
 	DumpPacket(mtcp, (char *)pkt_data, len, "IN", ifidx);
 #endif
