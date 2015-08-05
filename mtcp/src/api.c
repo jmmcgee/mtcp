@@ -91,6 +91,15 @@ GetSocketError(socket_map_t socket, void *optval, socklen_t *optlen)
 		}
 	}
 
+//	if(cur_stream->state == TCP_ST_SYN_SENT) {
+//		*(int *)optval = EINPROGRESS;
+//		*optlen = sizeof(int);
+//
+//		return 0;
+//	}
+//	if(cur_stream->state == TCP_ST_ESTABLISHED)
+//		return 0;
+//
 	errno = ENOSYS;
 	return -1;
 }

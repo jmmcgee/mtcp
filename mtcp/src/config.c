@@ -23,8 +23,8 @@
 #define MAX_OPTLINE_LEN 1024
 #define ALL_STRING "all"
 
-static const char *route_file = "config/route.conf";
-static const char *arp_file = "config/arp.conf";
+static const char *route_file = "/home/jmmcgee/config/route.conf";
+static const char *arp_file = "/home/jmmcgee/config/arp.conf";
 
 /*----------------------------------------------------------------------------*/
 static int 
