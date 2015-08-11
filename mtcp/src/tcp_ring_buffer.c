@@ -273,19 +273,19 @@ RBPut(rb_manager_t rbm, struct tcp_ring_buffer* buff,
 	if (len <= 0)
 		return 0;
 
-    // if data offset is smaller than head sequence, then drop
-    if (GetMinSeq(buff->head_seq, cur_seq) != buff->head_seq)
-        return 0;
+	// if data offset is smaller than head sequence, then drop
+	if (GetMinSeq(buff->head_seq, cur_seq) != buff->head_seq)
+		return 0;
 
-    putx = cur_seq - buff->head_seq;
+	putx = cur_seq - buff->head_seq;
 	end_off = putx + len;
-	if (buff->size <= end_off) {
+	if (buff->size < end_off) {
 		return -2;
 	}
-
+	
 	// if buffer is at tail, move the data to the first of head
 	if (buff->size <= (buff->head_offset + end_off)) {
-		memmove(buff->data, buff->head, buff->last_len + 1);
+		memmove(buff->data, buff->head, buff->last_len);
 		buff->tail_offset -= buff->head_offset;
 		buff->head_offset = 0;
 		buff->head = buff->data;
@@ -295,7 +295,6 @@ RBPut(rb_manager_t rbm, struct tcp_ring_buffer* buff,
 	if (buff->tail_offset < buff->head_offset + end_off) 
 		buff->tail_offset = buff->head_offset + end_off;
 	buff->last_len = buff->tail_offset - buff->head_offset;
-	buff->head[buff->last_len] = 0; /* null termination */
 
 	// create fragmentation context blocks
 	new_ctx = AllocateFragmentContext(rbm);
