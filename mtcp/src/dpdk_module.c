@@ -155,8 +155,10 @@ struct stats_struct {
 /*----------------------------------------------------------------------------*/
 static inline void print_pkt(struct rte_mbuf* pkt)
 {
-	if(pkt == NULL)
+	if(pkt == NULL) {
+		fprintf(stderr, "ERROR: pkt==NULL\n");
 		return;
+	}
 	int j= 0;
 	fprintf(stderr,"--------------------------------------------------------------------------------\n");
 	fprintf(stderr, "stats: seqn=%d,data_len=%d,pkt_len=%d,buf_len=%d\n",
